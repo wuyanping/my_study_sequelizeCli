@@ -1,0 +1,82 @@
+1. 创建一个空目录
+sequelize init
+
+2. 配置文件config/config.json
+
+3. 创建第一个模型（和迁移）
+model:generate命令。这个命令需要两个选项
+name，模型的名称
+attributes，模型属性列表
+eg:让我们创建一个名为的模型 User
+sequelize model:generate --name User --attributes firstName:string,lastName:string,email:string
+eg：sequelize model:generate --name User --attributes firstName:string,lastName:string,email:string
+
+4. 运行迁移
+sequelize db:migrate 在数据库中创建该表
+
+5. 撤消迁移
+sequelize db:migrate:undo 命令撤消所有迁移来恢复到初始状态
+
+6. 创造第一颗种子(用来将数据插入到一些表)
+sequelize seed:generate --name demo-user 
+现在我们应该编辑这个文件来将演示用户插入到User表中。
+'use strict';
+
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.bulkInsert('Users', [{
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'demo@demo.com'
+      }], {});
+  },
+
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.bulkDelete('Users', null, {});
+  }
+};
+
+7. 运行种子（把种子里面的数据添加到数据库）
+sequelize db:seed:all
+
+8. 撤消种子
+如果你想撤消最近的种子
+sequelize db:seed:undo
+
+如果你想撤消所有的种子
+sequelize db:seed:undo:all
+
+9. 存储
+
+有三种类型的存储，您可以使用的：sequelize，json，和none。
+
+sequelize ：将迁移和种子存储在后续数据库的表中
+json ：将迁移和种子存储在json文件中
+none ：不存储任何迁移/种子
+
+{
+  "development": {
+    "username": "root",
+    "password": null,
+    "database": "database_development",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    <!-- 迁移存储 -->
+    // Use a different storage type. Default: sequelize
+    "migrationStorage": "json",
+    // Use a different file name. Default: sequelize-meta.json
+    "migrationStoragePath": "sequelizeMeta.json",
+    // Use a different table name. Default: SequelizeMeta
+    "migrationStorageTableName": "sequelize_meta"
+
+    <!-- 种子储存 -->
+    // Use a different storage. Default: none
+    "seederStorage": "json",
+    // Use a different file name. Default: sequelize-data.json
+    "seederStoragePath": "sequelizeData.json",
+    // Use a different table name. Default: SequelizeData
+    "seederStorageTableName": "sequelize_data"
+  }
+}
+
+
